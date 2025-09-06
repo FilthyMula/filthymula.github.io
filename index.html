@@ -482,6 +482,45 @@
             color: var(--text-color);
             margin-top: auto;
         }
+
+        .community {
+            width: 100%;
+            max-width: 1200px;
+            padding: 2rem 1rem 4rem;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .community h2 {
+            font-size: 2rem;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .community p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .community .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .community .social-link img {
+            width: 60%;
+            height: 60%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .community .social-link:hover {
+            background: var(--accent-color);
+            color: #0a0a0a;
+            transform: translateY(-3px);
+        }
+
         
         .footer-content {
             max-width: 1200px;
@@ -781,7 +820,19 @@
     </main>
     
     <footer>
-        <div class="footer-bottom">
+        <div class="community">
+            <h2>Join the Community</h2>
+            <p>Follow us for updates and support:</p>
+            <div class="social-links">
+                <a href="https://t.me/solnftoolcom" class="social-link" target="_blank" rel="noopener noreferrer" title="Telegram">
+                    <img src="images/telegram.png" alt="Telegram">
+                </a>
+                <a href="https://x.com/XylintCS" class="social-link" target="_blank" rel="noopener noreferrer" title="X / Twitter">
+                    <img src="images/twitter.png" alt="X / Twitter">
+                </a>
+            </div>
+        </div>
+        <div>
             <p>🚧 This site is still in development — the backend will be up and running soon!</p>
             <p>💖 Support the Developer:</p>
             <div class="wallet-address" id="walletAddress">
@@ -885,6 +936,3 @@
     </script>
 </body>
 </html>
-
-
-
