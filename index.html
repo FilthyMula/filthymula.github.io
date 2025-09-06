@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOLiD - Solana ID NFT Tool</title>
+    <meta name="description" content="Create Solana ID NFTs, meme NFTs, and showcase your on-chain identity with SOLiD">
+    <meta name="keywords" content="solana, nft, web3, cryptocurrency, blockchain, meme, identity">
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="SOLiD - Solana ID NFT Tool">
+    <meta property="og:description" content="Create Solana ID NFTs, meme NFTs, and showcase your on-chain identity">
+    <meta property="og:image" content="https://yourdomain.com/logo.png">
+    <meta property="og:url" content="https://yourdomain.com">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/static/fonts/VarelaRound-Regular.ttf" as="font" type="font/ttf" crossorigin>
+    
+    <style>
+        @font-face {
+            font-family: 'Varela Round';
+            src: url('/static/fonts/VarelaRound-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        
+        :root {
+            --primary-bg: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+            --accent-color: #00FFA3;
+            --accent-color-rgb: 0, 255, 163;
+            --card-bg: #1a1a1a;
+            --header-bg: rgba(34, 34, 34, 0.95);
+            --text-color: #fff;
+            --text-secondary: rgba(255, 255, 255, 0.85);
+            --border-radius: 16px;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: var(--primary-bg);
+            color: var(--text-color);
+            min-height: 100vh;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Varela Round', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: hidden;
+        }
+        
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 4rem;
+            background: var(--header-bg);
+            border-bottom: 2px solid var(--accent-color);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.7);
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-color);
+            border-radius: 8px;
+            display: inline-block;
+        }
+        
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: var(--transition);
+            padding: 0.5rem 0;
+        }
+        
+        nav a::after {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 2px;
+            left: 0;
+            bottom: 0;
+            background-color: var(--accent-color);
+            transition: var(--transition);
+        }
+        
+        nav a:hover::after {
+            width: 100%;
+        }
+        
+        /* Mobile menu button */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Main content */
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            flex: 1;
+        }
+        
+        /* Hero Section */
+        .hero {
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 4rem;
+            position: relative;
+            text-align: center;
+            padding: 2rem 0;
+        }
+        
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+        
+        .hero img {
+            max-width: 200px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 0 25px rgba(var(--accent-color-rgb), 0.5);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(90deg, var(--accent-color), #ffffff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .hero .tagline {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: var(--accent-color);
+            color: #0a0a0a;
+            box-shadow: 0 4px 14px rgba(var(--accent-color-rgb), 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(var(--accent-color-rgb), 0.6);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-color);
+            border: 2px solid var(--accent-color);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(var(--accent-color-rgb), 0.1);
+        }
+        
+        /* Features Section */
+        .features {
+            text-align: center;
+            padding: 4rem 1rem;
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        .features h2 {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .features .subheading {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .feature-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(var(--accent-color-rgb), 0.2);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            text-align: left;
+            transition: var(--transition), transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .card::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(var(--accent-color-rgb),0.15) 0%, transparent 70%);
+            animation: rotate 8s linear infinite;
+            z-index: 0;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .card-icon {
+            background: rgba(var(--accent-color-rgb), 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card h3, .card p {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card:hover {
+            box-shadow: 0 0 35px rgba(var(--accent-color-rgb), 0.7);
+            transform: translateY(-5px);
+        }
+        
+        .card h3 {
+            color: var(--accent-color);
+        }
+        
+        .card p {
+            color: var(--text-secondary);
+        }
+        
+        /* Tokenomics Section */
+        .tokenomics {
+            width: 100%;
+            max-width: 1200px;
+            padding: 4rem 1rem;
+            text-align: center;
+        }
+        
+        .tokenomics h2 {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 3rem;
+        }
+        
+        .token-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .token-item {
+            background: var(--card-bg);
+            border: 1px solid rgba(var(--accent-color-rgb), 0.2);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+        }
+        
+        .token-item h3 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+        
+        .token-item p {
+            color: var(--text-secondary);
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        
+        /* Roadmap Section */
+        .roadmap {
+            width: 100%;
+            max-width: 1200px;
+            padding: 4rem 1rem;
+            text-align: center;
+        }
+        
+        .roadmap h2 {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 3rem;
+        }
+        
+        .roadmap-timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .roadmap-timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 100%;
+            width: 2px;
+            background: var(--accent-color);
+        }
+        
+        .roadmap-item {
+            display: flex;
+            justify-content: flex-end;
+            padding-right: 30px;
+            position: relative;
+            margin-bottom: 40px;
+            width: 50%;
+            text-align: right;
+        }
+        
+        .roadmap-item:nth-child(even) {
+            align-self: flex-end;
+            justify-content: flex-start;
+            padding-left: 30px;
+            padding-right: 0;
+            left: 50%;
+            text-align: left;
+        }
+        
+        .roadmap-content {
+            background: var(--card-bg);
+            border: 1px solid rgba(var(--accent-color-rgb), 0.2);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            width: 100%;
+            position: relative;
+        }
+        
+        .roadmap-content h3 {
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .roadmap-content p {
+            color: var(--text-secondary);
+        }
+        
+        .roadmap-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: -10px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .roadmap-item:nth-child(even)::after {
+            left: -10px;
+        }
+        
+        /* Community Section */
+        .community {
+            width: 100%;
+            max-width: 1200px;
+            padding: 4rem 1rem;
+            text-align: center;
+        }
+        
+        .community h2 {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+        
+        .community p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .social-link {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 1px solid rgba(var(--accent-color-rgb), 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+        
+        .social-link:hover {
+            background: var(--accent-color);
+            color: #0a0a0a;
+            transform: translateY(-3px);
+        }
+        
+        /* Footer Section */
+        footer {
+            width: 100%;
+            background: var(--header-bg);
+            border-top: 2px solid var(--accent-color);
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-color);
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            text-align: left;
+        }
+        
+        .footer-logo {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links h3 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links ul {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-color);
+        }
+    
+        
+        .wallet-address {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            margin: 1rem 0;
+            font-family: monospace;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .wallet-address:hover {
+            background: rgba(var(--accent-color-rgb), 0.1);
+        }
+        
+        .wallet-address.copied {
+            background: rgba(var(--accent-color-rgb), 0.2);
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 968px) {
+            header {
+                padding: 1rem 2rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+            }
+            
+            nav {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: var(--header-bg);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: var(--transition);
+            }
+            
+            nav.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .roadmap-timeline::before {
+                left: 20px;
+            }
+            
+            .roadmap-item {
+                width: 100%;
+                padding-left: 50px;
+                padding-right: 0;
+                text-align: left;
+                justify-content: flex-start;
+            }
+            
+            .roadmap-item:nth-child(even) {
+                left: 0;
+                padding-left: 50px;
+            }
+            
+            .roadmap-item::after {
+                left: 11px;
+                right: auto;
+            }
+            
+            .roadmap-item:nth-child(even)::after {
+                left: 11px;
+            }
+        }
+        
+        /* Animation utilities */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Loading animation */
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(var(--accent-color-rgb), 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <span class="logo-icon">S</span>
+            SOLiD
+        </div>
+        <nav id="nav">
+            <a href="#features">Features</a>
+            <a href="#tokenomics">Tokenomics</a>
+            <a href="#roadmap">Roadmap</a>
+            <a href="#community">Community</a>
+        </nav>
+        <button class="menu-toggle" id="menuToggle">☰</button>
+    </header>
+    
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <img src="logo.png" alt="SOLiD Logo">
+                <h1>SOLiD Protocol</h1>
+                <p class="tagline">Your on-chain identity solution for the Solana ecosystem. Create ID NFTs, meme NFTs, and build your Web3 presence.</p>
+                <div class="cta-buttons">
+                    <a href="#" class="btn btn-primary" id="connectWallet">
+                        <span class="btn-text">Connect Wallet</span>
+                        <span class="loader" id="walletLoader" style="display: none;"></span>
+                    </a>
+                    <a href="#features" class="btn btn-secondary">Learn More</a>
+                </div>
+            </div>
+        </section>
+        
+        <section class="features" id="features">
+            <h2>Why SOLiD?</h2>
+            <p class="subheading">A comprehensive suite of tools for your Solana NFT journey</p>
+            
+            <div class="feature-cards">
+                <div class="card fade-in">
+                    <div class="card-icon">👤</div>
+                    <h3>Unique Identity</h3>
+                    <p>Create a Solana ID NFT that represents YOU on-chain with verifiable credentials.</p>
+                </div>
+                
+                <div class="card fade-in">
+                    <div class="card-icon">👁️</div>
+                    <h3>Instant Preview</h3>
+                    <p>See your NFT live with our advanced preview technology before minting.</p>
+                </div>
+                
+                <div class="card fade-in">
+                    <div class="card-icon">🔒</div>
+                    <h3>Secure Wallet Integration</h3>
+                    <p>Connect your Phantom, Solflare, or other wallets safely with our secure integration.</p>
+                </div>
+                
+                <div class="card fade-in">
+                    <div class="card-icon">⚡</div>
+                    <h3>Web3 Ready</h3>
+                    <p>Built for the Solana ecosystem from the ground up with fast blockchain interactions.</p>
+                </div>
+                
+                <div class="card fade-in">
+                    <div class="card-icon">🔄</div>
+                    <h3>Cross-Platform</h3>
+                    <p>Your SOLiD identity works across multiple dApps and platforms in the Solana ecosystem.</p>
+                </div>
+                
+                <div class="card fade-in">
+                    <div class="card-icon">🌐</div>
+                    <h3>Community Driven</h3>
+                    <p>Empowering users to showcase identity NFTs, meme NFTs, and trade them in our marketplace.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="tokenomics" id="tokenomics">
+            <h2>Tokenomics</h2>
+            
+            <div class="token-grid">
+                <div class="token-item fade-in">
+                    <h3>Total Supply</h3>
+                    <p>1,000,000,000</p>
+                </div>
+                
+                <div class="token-item fade-in">
+                    <h3>Token Name</h3>
+                    <p>SOLiD</p>
+                </div>
+                
+                <div class="token-item fade-in">
+                    <h3>Blockchain</h3>
+                    <p>Solana</p>
+                </div>
+            </div>
+            
+            <a href="#" class="btn btn-secondary">View Whitepaper</a>
+        </section>
+        
+        <section class="roadmap" id="roadmap">
+            <h2>Roadmap</h2>
+            
+            <div class="roadmap-timeline">
+                <div class="roadmap-item fade-in">
+                    <div class="roadmap-content">
+                        <h3>Q3 2025</h3>
+                        <p>Concept development and team formation</p>
+                    </div>
+                </div>
+
+                <div class="roadmap-item fade-in">
+                    <div class="roadmap-content">
+                        <h3>Q4 2025</h3>
+                        <p>Smart contract development and testing</p>
+                    </div>
+                </div>
+
+                <div class="roadmap-item fade-in">
+                    <div class="roadmap-content">
+                        <h3>Q1 2026</h3>
+                        <p>Website launch and community building</p>
+                    </div>
+                </div>
+
+                <div class="roadmap-item fade-in">
+                    <div class="roadmap-content">
+                        <h3>Q2 2026</h3>
+                        <p>Token launch and initial NFT minting</p>
+                    </div>
+                </div>
+
+                <div class="roadmap-item fade-in">
+                    <div class="roadmap-content">
+                        <h3>Q3 2026</h3>
+                        <p>Marketplace development and partnerships</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="footer-bottom">
+            <p>🚧 This site is still in development — the backend will be up and running soon!</p>
+            <p>💖 Support the Developer:</p>
+            <div class="wallet-address" id="walletAddress">
+                559pSpzNtkn9DqJoKEVRaa6wTbUGcYaDep6Vazp8tfbb
+            </div>
+            <p>© 2023 SOLiD Protocol. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const menuToggle = document.getElementById('menuToggle');
+        const nav = document.getElementById('nav');
+        const connectWalletBtn = document.getElementById('connectWallet');
+        const walletLoader = document.getElementById('walletLoader');
+        const walletAddress = document.getElementById('walletAddress');
+        
+        // Mobile menu toggle
+        menuToggle.addEventListener('click', () => {
+            nav.classList.toggle('active');
+            menuToggle.textContent = nav.classList.contains('active') ? '✕' : '☰';
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                if (this.getAttribute('href') === '#') return;
+                
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    // Close mobile menu if open
+                    if (nav.classList.contains('active')) {
+                        nav.classList.remove('active');
+                        menuToggle.textContent = '☰';
+                    }
+                    
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Wallet connection simulation
+        connectWalletBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            const btnText = connectWalletBtn.querySelector('.btn-text');
+            
+            // Show loading state
+            btnText.textContent = 'Connecting...';
+            walletLoader.style.display = 'inline-block';
+            
+            // Simulate connection process
+            setTimeout(() => {
+                walletLoader.style.display = 'none';
+                btnText.textContent = 'Connected';
+                connectWalletBtn.classList.add('connected');
+                
+                // Revert after 2 seconds (simulation)
+                setTimeout(() => {
+                    btnText.textContent = 'Connect Wallet';
+                    connectWalletBtn.classList.remove('connected');
+                }, 2000);
+            }, 1500);
+        });
+        
+        // Copy wallet address functionality
+        walletAddress.addEventListener('click', () => {
+            const text = walletAddress.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = walletAddress.textContent;
+                walletAddress.textContent = 'Copied to clipboard!';
+                walletAddress.classList.add('copied');
+                
+                setTimeout(() => {
+                    walletAddress.textContent = originalText;
+                    walletAddress.classList.remove('copied');
+                }, 2000);
+            });
+        });
+        
+        // Fade-in animation on scroll
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+        
+        fadeElements.forEach(element => {
+            observer.observe(element);
+        });
+        
+        // Simple phishing protection - domain check
+        const legitDomain = 'solid-protocol.com'; // Change to your actual domain
+        if (window.location.hostname !== legitDomain && 
+            window.location.hostname !== 'localhost' && 
+            window.location.hostname !== '127.0.0.1') {
+            console.warn('Warning: This site might be a phishing attempt. Please check the URL.');
+        }
+    </script>
+</body>
+</html>
