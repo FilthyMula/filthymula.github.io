@@ -6,16 +6,8 @@
     <title>SOLiD - Solana ID NFT Tool</title>
     <meta name="description" content="Create Solana ID NFTs, meme NFTs, and showcase your on-chain identity with SOLiD">
     <meta name="keywords" content="solana, nft, web3, cryptocurrency, blockchain, meme, identity">
-    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
-    
-    <!-- Open Graph / Social Media Meta Tags -->
-    <meta property="og:title" content="SOLiD - Solana ID NFT Tool">
-    <meta property="og:description" content="Create Solana ID NFTs, meme NFTs, and showcase your on-chain identity">
-    <meta property="og:image" content="https://yourdomain.com/logo.png">
-    <meta property="og:url" content="https://yourdomain.com">
-    <meta name="twitter:card" content="summary_large_image">
-    
-    <!-- Preload critical resources -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
     <link rel="preload" href="/static/fonts/VarelaRound-Regular.ttf" as="font" type="font/ttf" crossorigin>
     
     <style>
@@ -78,14 +70,6 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-        }
-        
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: var(--accent-color);
-            border-radius: 8px;
-            display: inline-block;
         }
         
         nav {
@@ -661,7 +645,6 @@
 <body>
     <header>
         <div class="logo">
-            <span class="logo-icon">S</span>
             SOLiD
         </div>
         <nav id="nav">
@@ -805,7 +788,7 @@
             <div class="wallet-address" id="walletAddress">
                 559pSpzNtkn9DqJoKEVRaa6wTbUGcYaDep6Vazp8tfbb
             </div>
-            <p>© 2023 SOLiD Protocol. All rights reserved.</p>
+            <p>© 2023 SOLiD All rights reserved.</p>
         </div>
     </footer>
 
@@ -885,7 +868,6 @@
             });
         });
         
-        // Fade-in animation on scroll
         const fadeElements = document.querySelectorAll('.fade-in');
         
         const observer = new IntersectionObserver((entries) => {
@@ -901,14 +883,6 @@
         fadeElements.forEach(element => {
             observer.observe(element);
         });
-        
-        // Simple phishing protection - domain check
-        const legitDomain = 'solid-protocol.com'; // Change to your actual domain
-        if (window.location.hostname !== legitDomain && 
-            window.location.hostname !== 'localhost' && 
-            window.location.hostname !== '127.0.0.1') {
-            console.warn('Warning: This site might be a phishing attempt. Please check the URL.');
-        }
     </script>
 </body>
 </html>
